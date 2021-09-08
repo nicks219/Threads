@@ -6,8 +6,9 @@ namespace Threads
 {
     public class BankThreads
     {
-        public int _transactionCount { get; private set; }
-        int _delayTime;
+        public Mutex mutex;
+        public int transactionCount { get; private set; }
+        int delayTime;
 
         /// <summary>
         /// создаю 4 потока для случайного перевода денег
@@ -17,54 +18,68 @@ namespace Threads
         /// <param name="delayTime">время задержки</param>
         public BankThreads(List<Account> accounts, int transactionCount, int delayTime)
         {
-            Thread tr;
-            tr = new Thread(() => Convert(accounts[0], accounts[1], 0));
-            tr.Start();
-            tr = new Thread(() => Convert(accounts[2], accounts[3], 0));
-            tr.Start();
-            tr = new Thread(() => Convert(accounts[0], accounts[1], 1));
-            tr.Start();
-            tr = new Thread(() => Convert(accounts[2], accounts[3], 1));
-            tr.Start();
-            _transactionCount = transactionCount;
-            _delayTime = delayTime;
+            mutex = new Mutex();
+            Thread tr1;
+            Thread tr2;
+            Thread tr3;
+            Thread tr4;
+            tr1 = new Thread(() => MoneyTransfer(accounts[0], accounts[1], 0));
+            tr2 = new Thread(() => MoneyTransfer(accounts[2], accounts[3], 0));
+            tr3 = new Thread(() => MoneyTransfer(accounts[1], accounts[0], 0));
+            tr4 = new Thread(() => MoneyTransfer(accounts[2], accounts[3], 1));
+            tr1.Start();
+            tr3.Start();
+            tr2.Start();
+            tr4.Start();
+            this.transactionCount = transactionCount;
+            this.delayTime = delayTime;
         }
 
-        public void Convert(Account f, Account s, int direction)
+        public void MoneyTransfer(Account first, Account second, int direction)
         {
+            int id = Thread.CurrentThread.ManagedThreadId; ;
             var rnd = new Random();
-            while (_transactionCount > 0)
+            while (transactionCount > 0)
             {
-                lock (f)
+                mutex.BlockingWait(first, second);
                 {
-                    lock (s)
+                    lock (first)
                     {
-                        int firstMoney = f.Money;
-                        int secondMoney = s.Money;
-                        var valueMoney = rnd.Next(1000);
-                        if (direction == 0)
+                        //ПОПЫТКА СЛОМАТЬ
+                        Thread.Sleep(new Random().Next(delayTime));
+                        lock (second)
                         {
-                            firstMoney -= valueMoney;
-                            secondMoney += valueMoney;
+                            decimal firstMoney = first.Money;
+                            decimal secondMoney = second.Money;
+                            var valueMoney = rnd.Next(1000) + 0.1M;
+                            if (direction == 0)
+                            {
+                                firstMoney -= valueMoney;
+                                secondMoney += valueMoney;
+                            }
+                            else
+                            {
+                                firstMoney += valueMoney;
+                                secondMoney -= valueMoney;
+                            }
+                            first.Money = firstMoney;
+                            second.Money = secondMoney;
                         }
-                        else
-                        {
-                            firstMoney += valueMoney;
-                            secondMoney -= valueMoney;
-                        }
-                        f.Money = firstMoney;
-                        s.Money = secondMoney;
                     }
+                    if (!mutex.ResetMutex(first, second)) 
+                    { 
+                        throw new Exception(); 
+                    }
+                    //Thread.Sleep(new Random().Next(delayTime));
+                    transactionCount--;
                 }
-                Thread.Sleep(new Random().Next(_delayTime));
-                _transactionCount--;
             }
         }
 
         public int PrintInfo()
         {
-            Console.WriteLine("Transaction: {0}", _transactionCount);
-            return _transactionCount;
+            Console.WriteLine("Transaction: {0}", transactionCount);
+            return transactionCount;
         }
     }
 }

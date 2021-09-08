@@ -10,9 +10,9 @@ namespace Threads
     public class Account
     {
         public string ID { get; private set; }
-        int _money;
-        //object _lock;
-        public int Money
+        decimal _money;
+        int id;
+        public decimal Money
         {
             get
             {
@@ -21,8 +21,7 @@ namespace Threads
             set
             {
                 //переключаю поток - "тест Албахари"
-                Thread.Yield();
-                //lock (_lock)
+                //Thread.Yield();
                 {
                     _money = value;
                 }
@@ -30,7 +29,9 @@ namespace Threads
         }
         public Account()
         {
-            Money = 10000;
+            id = new Object().GetHashCode();
+            Console.WriteLine(id);
+            Money = 10000M;
             Random rnd = new Random();
             ID = rnd.Next(1, 10000).ToString();
         }

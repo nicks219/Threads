@@ -17,9 +17,9 @@ namespace Threads
             }
         }
 
-        public int Sum()
+        public decimal Sum()
         {
-            int sum = 0;
+            decimal sum = 0;
             foreach(var r in accounts)
             {
                 sum += r.Money;
@@ -27,12 +27,12 @@ namespace Threads
             return sum;
         }
 
-        public int PrintInfo()
+        public decimal PrintInfo()
         {
-            int sum = 0;
+            decimal sum = 0;
             foreach (var r in accounts)
             {
-                int money = r.Money;
+                decimal money = r.Money;
                 Console.WriteLine("Account: {0} Money: {1}", r.ID, money);
                 sum += money;
             }

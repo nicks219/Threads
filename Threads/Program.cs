@@ -9,15 +9,15 @@ namespace Threads
         {
             int accountsCount = 4;
             var accounts = new Accounts(accountsCount);
-            var bank = new BankThreads(accounts.accounts, 2000, 2);
+            var bank = new BankThreads(accounts.accounts, 500, 10);
 
-            while (bank._transactionCount > 0)
+            while (bank.transactionCount > 0)
             {
                 //переключаю поток - "тест Албахари"
-                Thread.Yield();
+                //Thread.Yield();
             }
             accounts.PrintInfo();
-            //bank.PrintInfo();
+            bank.PrintInfo();
             Console.ReadLine();
         }
     }

@@ -15,15 +15,15 @@ namespace Thread_Tests
         {
             int accountsCount = 4;
             accounts = new Accounts(accountsCount);
-            bank = new BankThreads(accounts.accounts, 2000, 1);
+            bank = new BankThreads(accounts.accounts, 1000, 1);
         }
 
         [Test]
         public void Test1()
         { 
-            while (bank._transactionCount > 0)
+            while (bank.transactionCount > 0)
             {
-                Thread.Yield();
+                //Thread.Yield();
             }
             Assert.AreEqual(accounts.PrintInfo(), 40000);
             //bank.PrintInfo();
