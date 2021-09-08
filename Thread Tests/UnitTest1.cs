@@ -20,7 +20,7 @@ namespace Thread_Tests
 
         [Test]
         //сохранился ли баланс на счетах
-        //до конца ли прошли транзакции
+        //до конца ли исчерпаны транзакции
         public void Test1()
         {
             while (bank.Transactions > 0) ;

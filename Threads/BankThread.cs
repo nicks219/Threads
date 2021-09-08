@@ -7,38 +7,46 @@ namespace Threads
     {
         Mutex mutex;
         int delayTime;
+
         public BankThread(Mutex mutex, int delayTime)
         {
             this.mutex = mutex;
             this.delayTime = delayTime;
         }
-        public void MoneyTransfer(Account first, Account second, ref int transactionCount)
+
+        /// <summary>
+        /// перевод денежных средств
+        /// </summary>
+        /// <param name="sender">отправитель</param>
+        /// <param name="recipient">получатель</param>
+        /// <param name="transactionCount">ссылка на счетчик транзакций</param>
+        public void MoneyTransfer(Account sender, Account recipient, ref int transactionCount)
         {
             int id = Thread.CurrentThread.ManagedThreadId; ;
             var rnd = new Random();
             while (transactionCount > 0)
             {
-                mutex.BlockingWait(first, second);
+                mutex.BlockingWait(sender, recipient);
                 {
-                    lock (first)
+                    lock (sender)
                     {
                         //ПОПЫТКА СЛОМАТЬ
                         Thread.Sleep(new Random().Next(delayTime));
-                        lock (second)
+                        lock (recipient)
                         {
-                            decimal firstMoney = first.Money;
-                            decimal secondMoney = second.Money;
+                            decimal firstMoney = sender.Money;
+                            decimal secondMoney = recipient.Money;
                             var valueMoney = rnd.Next(1000) + 0.1M;
                             firstMoney -= valueMoney;
                             secondMoney += valueMoney;
-                            first.Money = firstMoney;
-                            second.Money = secondMoney;
+                            sender.Money = firstMoney;
+                            recipient.Money = secondMoney;
                         }
                         transactionCount--;
                     }
-                    if (!mutex.ResetMutex(first, second))
+                    if (!mutex.ResetMutex(sender, recipient))
                     {
-                        throw new Exception();
+                        throw new ThreadStateException();
                     }
                     //Thread.Sleep(new Random().Next(delayTime));
                 }

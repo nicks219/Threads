@@ -27,7 +27,6 @@ namespace Threads
         }
         public Account()
         {
-            ID = new Object().GetHashCode().ToString();
             Money = 10000M;
             Random rnd = new Random();
             ID = rnd.Next(1, 10000).ToString();

@@ -6,9 +6,11 @@ namespace Threads
     public class Accounts
     {
         public List<Account> accounts;
+        private Object locked;
 
         public Accounts(int accountCount)
         {
+            locked = new Object();
             accounts = new List<Account>();
             while (accountCount > 0)
             {
@@ -20,9 +22,12 @@ namespace Threads
         public decimal Sum()
         {
             decimal sum = 0;
-            foreach(var r in accounts)
+            lock (locked)
             {
-                sum += r.Money;
+                foreach (var r in accounts)
+                {
+                    sum += r.Money;
+                }
             }
             return sum;
         }
@@ -30,13 +35,16 @@ namespace Threads
         public decimal PrintInfo()
         {
             decimal sum = 0;
-            foreach (var r in accounts)
+            lock (locked)
             {
-                decimal money = r.Money;
-                Console.WriteLine("Account: {0} Money: {1}", r.ID, money);
-                sum += money;
+                foreach (var r in accounts)
+                {
+                    decimal money = r.Money;
+                    Console.WriteLine("Account: {0} Money: {1}", r.ID, money);
+                    sum += r.Money;
+                }
+                Console.WriteLine("Sum: {0}", sum);
             }
-            Console.WriteLine("Sum: {0}", sum);
             return sum;
         }
     }

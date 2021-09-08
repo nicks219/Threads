@@ -15,8 +15,8 @@ namespace Threads
         /// создаю 4 потока для случайного перевода денег
         /// </summary>
         /// <param name="accounts">участники транзакций</param>
-        /// <param name="transactionCount">количество транзакций</param>
-        /// <param name="delayTime">время задержки</param>
+        /// <param name="_transactionCount">количество транзакций</param>
+        /// <param name="_delayTime">максимальное время задержки между транзакциями</param>
         public BankThreads(List<Account> accounts, int _transactionCount, int _delayTime)
         {
             transactionCount = _transactionCount;
