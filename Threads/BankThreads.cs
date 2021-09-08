@@ -46,6 +46,7 @@ namespace Threads
             tr2.Join();
             tr3.Join();
             tr4.Join();
+            Console.WriteLine("Ends at {0} transactions.. ", transactionCount);
         }
 
         public int PrintInfo()

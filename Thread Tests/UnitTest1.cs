@@ -1,6 +1,4 @@
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading;
 using Threads;
 
 namespace Thread_Tests

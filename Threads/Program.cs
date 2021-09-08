@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace Threads
 {
@@ -8,10 +7,10 @@ namespace Threads
         public static void Main(string[] args)
         {
             int accountsCount = 4;
-            var accounts = new Accounts(accountsCount);
-            var bank = new BankThreads(accounts.accounts, 400, 10);
+            Accounts accounts = new Accounts(accountsCount);
+            BankThreads bank = new BankThreads(accounts.accounts, 400, 10);
 
-            while (bank.Transactions > 0) ;
+            //while (bank.Transactions > 0) ;
             accounts.PrintInfo();
             Console.ReadLine();
         }

@@ -23,7 +23,7 @@ namespace Threads
         public void MoneyTransfer(Account sender, Account recipient, ref int transactionCount)
         {
             int id = Thread.CurrentThread.ManagedThreadId; ;
-            var rnd = new Random();
+            Random rnd = new Random();
             while (transactionCount > 0)
             {
                 mutex.BlockingWait(sender, recipient);
@@ -34,13 +34,13 @@ namespace Threads
                         Thread.Sleep(new Random().Next(delayTime));
                         lock (recipient)
                         {
-                            decimal firstMoney = sender.Money;
-                            decimal secondMoney = recipient.Money;
-                            var valueMoney = rnd.Next(1000) + 0.1M;
-                            firstMoney -= valueMoney;
-                            secondMoney += valueMoney;
-                            sender.Money = firstMoney;
-                            recipient.Money = secondMoney;
+                            decimal senderMoney = sender.Money;
+                            decimal recipientMoney = recipient.Money;
+                            decimal theFunds = rnd.Next(1000) + 0.1M;
+                            senderMoney -= theFunds;
+                            recipientMoney += theFunds;
+                            sender.Money = senderMoney;
+                            recipient.Money = recipientMoney;
                         }
                         transactionCount--;
                     }
