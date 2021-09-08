@@ -8,9 +8,7 @@ namespace Threads
         {
             int accountsCount = 4;
             Accounts accounts = new Accounts(accountsCount);
-            BankThreads bank = new BankThreads(accounts.accounts, 400, 10);
-
-            //while (bank.Transactions > 0) ;
+            _ = new BankThreads(accounts.accounts, 500, 2);
             accounts.PrintInfo();
             Console.ReadLine();
         }

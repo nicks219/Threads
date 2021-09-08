@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Threads
 {
@@ -27,25 +28,38 @@ namespace Threads
             Thread tr2;
             Thread tr3;
             Thread tr4;
+            Thread tr5;
+
+            Task t5;
+
             BankThread bt1 = new BankThread(mutex, delayTime);
             BankThread bt2 = new BankThread(mutex, delayTime);
             BankThread bt3 = new BankThread(mutex, delayTime);
             BankThread bt4 = new BankThread(mutex, delayTime);
+            BankThread bt5 = new BankThread(mutex, delayTime);
 
-            tr1 = new Thread(() => bt1.MoneyTransfer(accounts[0], accounts[1], ref transactionCount));
-            tr2 = new Thread(() => bt2.MoneyTransfer(accounts[2], accounts[3], ref transactionCount));
-            tr3 = new Thread(() => bt3.MoneyTransfer(accounts[1], accounts[0], ref transactionCount));
-            tr4 = new Thread(() => bt4.MoneyTransfer(accounts[3], accounts[2], ref transactionCount));
+            //0>3 все ломал
+            t5 = Task.Run(() => bt1.MoneyTransfer(accounts[0], accounts[3], ref transactionCount));
+            tr1 = new Thread(() => bt1.MoneyTransfers(accounts[0], accounts[1], ref transactionCount, 1));
+            tr2 = new Thread(() => bt2.MoneyTransfers(accounts[2], accounts[3], ref transactionCount, 2));
+            tr3 = new Thread(() => bt3.MoneyTransfers(accounts[1], accounts[0], ref transactionCount, 3));
+            tr4 = new Thread(() => bt4.MoneyTransfers(accounts[3], accounts[2], ref transactionCount, 4));
+            tr5 = new Thread(() => bt4.MoneyTransfers(accounts[0], accounts[3], ref transactionCount, 0));
+
+            //tr5.Start();
+
             tr1.Start();
             tr3.Start();
             tr2.Start();
             tr4.Start();
+            
 
             Console.WriteLine("Start {0} transactions.. ", transactionCount);
             tr1.Join();
             tr2.Join();
             tr3.Join();
             tr4.Join();
+            //tr5.Join();
             Console.WriteLine("Ends at {0} transactions.. ", transactionCount);
         }
 

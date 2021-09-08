@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Threads
 {
@@ -8,16 +9,25 @@ namespace Threads
     /// </summary>
     public class Mutex
     {
-        private HashSet<Account> hashset = new HashSet<Account>();
-        private Object locked = new Object();
+        private readonly HashSet<Account> hashset = new HashSet<Account>();
+        private readonly object locked = new Object();
 
-        private bool SetMutex(Account a1, Account a2)
+        private bool SetMutex(Account a1, Account a2, int id)
         {
             bool result;
             lock (locked)
             {
+                //если транзакция не удалась, надо делать откат транзакции
                 result = hashset.Add(a1);
-                result = result && hashset.Add(a2);
+                if (result == true)
+                {
+                    result = result && hashset.Add(a2);
+                    if (result == false)
+                    {
+                        hashset.Remove(a1);
+                    }
+                }
+
             }
             return result;
         }
@@ -38,9 +48,9 @@ namespace Threads
         /// </summary>
         /// <param name="a1">первый аккаунт</param>
         /// <param name="a2">второй аккаунт</param>
-        public void BlockingWait(Account a1, Account a2)
+        public void BlockingWait(Account a1, Account a2, int id)
         {
-            while (!this.SetMutex(a1, a2)) ;
+            while (!this.SetMutex(a1, a2, id)) ;
             return;
         }
     }

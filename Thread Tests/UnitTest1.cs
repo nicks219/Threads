@@ -23,7 +23,7 @@ namespace Thread_Tests
         {
             while (bank.Transactions > 0) ;
             Assert.AreEqual(accounts.PrintInfo(), 40000);
-            Assert.AreEqual(bank.PrintInfo(), -3);
+            Assert.IsTrue(bank.PrintInfo() < 0);
         }
     }
 }
