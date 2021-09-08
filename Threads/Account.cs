@@ -11,7 +11,7 @@ namespace Threads
     {
         public string ID { get; private set; }
         decimal _money;
-        int id;
+
         public decimal Money
         {
             get
@@ -20,8 +20,6 @@ namespace Threads
             }
             set
             {
-                //переключаю поток - "тест Албахари"
-                //Thread.Yield();
                 {
                     _money = value;
                 }
@@ -29,8 +27,7 @@ namespace Threads
         }
         public Account()
         {
-            id = new Object().GetHashCode();
-            Console.WriteLine(id);
+            ID = new Object().GetHashCode().ToString();
             Money = 10000M;
             Random rnd = new Random();
             ID = rnd.Next(1, 10000).ToString();

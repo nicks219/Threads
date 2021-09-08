@@ -15,18 +15,17 @@ namespace Thread_Tests
         {
             int accountsCount = 4;
             accounts = new Accounts(accountsCount);
-            bank = new BankThreads(accounts.accounts, 1000, 1);
+            bank = new BankThreads(accounts.accounts, 700, 2);
         }
 
         [Test]
+        //сохранился ли баланс на счетах
+        //до конца ли прошли транзакции
         public void Test1()
-        { 
-            while (bank.transactionCount > 0)
-            {
-                //Thread.Yield();
-            }
+        {
+            while (bank.Transactions > 0) ;
             Assert.AreEqual(accounts.PrintInfo(), 40000);
-            //bank.PrintInfo();
+            Assert.AreEqual(bank.PrintInfo(), -3);
         }
     }
 }

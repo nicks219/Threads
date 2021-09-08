@@ -9,8 +9,9 @@ namespace Threads
 {
     public class Mutex
     {
-        public static HashSet<Account> hashset = new HashSet<Account>();
-        public static Object locked = new Object();
+        private HashSet<Account> hashset = new HashSet<Account>();
+        private Object locked = new Object();
+
         private bool SetMutex(Account a1, Account a2)
         {
             bool result;
@@ -35,7 +36,7 @@ namespace Threads
 
         public void BlockingWait(Account a1, Account a2)
         {
-            while (!this.SetMutex(a1, a2));
+            while (!this.SetMutex(a1, a2)) ;
             return;
         }
     }

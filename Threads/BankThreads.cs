@@ -6,9 +6,10 @@ namespace Threads
 {
     public class BankThreads
     {
-        public Mutex mutex;
-        public int transactionCount { get; private set; }
-        int delayTime;
+        private readonly Mutex mutex;
+        private readonly int delayTime;
+        private int transactionCount;
+        public int Transactions { get => transactionCount; }
 
         /// <summary>
         /// создаю 4 потока для случайного перевода денег
@@ -16,64 +17,35 @@ namespace Threads
         /// <param name="accounts">участники транзакций</param>
         /// <param name="transactionCount">количество транзакций</param>
         /// <param name="delayTime">время задержки</param>
-        public BankThreads(List<Account> accounts, int transactionCount, int delayTime)
+        public BankThreads(List<Account> accounts, int _transactionCount, int _delayTime)
         {
+            transactionCount = _transactionCount;
+            delayTime = _delayTime;
+
             mutex = new Mutex();
             Thread tr1;
             Thread tr2;
             Thread tr3;
             Thread tr4;
-            tr1 = new Thread(() => MoneyTransfer(accounts[0], accounts[1], 0));
-            tr2 = new Thread(() => MoneyTransfer(accounts[2], accounts[3], 0));
-            tr3 = new Thread(() => MoneyTransfer(accounts[1], accounts[0], 0));
-            tr4 = new Thread(() => MoneyTransfer(accounts[2], accounts[3], 1));
+            BankThread bt1 = new BankThread(mutex, delayTime);
+            BankThread bt2 = new BankThread(mutex, delayTime);
+            BankThread bt3 = new BankThread(mutex, delayTime);
+            BankThread bt4 = new BankThread(mutex, delayTime);
+
+            tr1 = new Thread(() => bt1.MoneyTransfer(accounts[0], accounts[1], ref transactionCount));
+            tr2 = new Thread(() => bt2.MoneyTransfer(accounts[2], accounts[3], ref transactionCount));
+            tr3 = new Thread(() => bt3.MoneyTransfer(accounts[1], accounts[0], ref transactionCount));
+            tr4 = new Thread(() => bt4.MoneyTransfer(accounts[3], accounts[2], ref transactionCount));
             tr1.Start();
             tr3.Start();
             tr2.Start();
             tr4.Start();
-            this.transactionCount = transactionCount;
-            this.delayTime = delayTime;
-        }
 
-        public void MoneyTransfer(Account first, Account second, int direction)
-        {
-            int id = Thread.CurrentThread.ManagedThreadId; ;
-            var rnd = new Random();
-            while (transactionCount > 0)
-            {
-                mutex.BlockingWait(first, second);
-                {
-                    lock (first)
-                    {
-                        //ПОПЫТКА СЛОМАТЬ
-                        Thread.Sleep(new Random().Next(delayTime));
-                        lock (second)
-                        {
-                            decimal firstMoney = first.Money;
-                            decimal secondMoney = second.Money;
-                            var valueMoney = rnd.Next(1000) + 0.1M;
-                            if (direction == 0)
-                            {
-                                firstMoney -= valueMoney;
-                                secondMoney += valueMoney;
-                            }
-                            else
-                            {
-                                firstMoney += valueMoney;
-                                secondMoney -= valueMoney;
-                            }
-                            first.Money = firstMoney;
-                            second.Money = secondMoney;
-                        }
-                    }
-                    if (!mutex.ResetMutex(first, second)) 
-                    { 
-                        throw new Exception(); 
-                    }
-                    //Thread.Sleep(new Random().Next(delayTime));
-                    transactionCount--;
-                }
-            }
+            Console.WriteLine("Start {0} transactions.. ", transactionCount);
+            tr1.Join();
+            tr2.Join();
+            tr3.Join();
+            tr4.Join();
         }
 
         public int PrintInfo()
