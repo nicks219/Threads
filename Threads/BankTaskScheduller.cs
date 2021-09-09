@@ -14,7 +14,7 @@ namespace Threads
         public int Transactions { get => transactionCount; }
 
         /// <summary>
-        /// создаю 4 потока для случайного перевода денег
+        /// создаю несколько тасков для случайного перевода денег
         /// </summary>
         /// <param name="accounts">участники транзакций</param>
         /// <param name="_transactionCount">количество транзакций</param>
@@ -27,11 +27,11 @@ namespace Threads
             mutex = new Mutex();
             Console.WriteLine("Start {0} transactions.. ", transactionCount);
 
-            BankThread bt1 = new BankThread(mutex, delayTime);
-            BankThread bt2 = new BankThread(mutex, delayTime);
-            BankThread bt3 = new BankThread(mutex, delayTime);
-            BankThread bt4 = new BankThread(mutex, delayTime);
-            BankThread bt5 = new BankThread(mutex, delayTime);
+            MoneyTransferrer bt1 = new MoneyTransferrer(mutex, delayTime);
+            MoneyTransferrer bt2 = new MoneyTransferrer(mutex, delayTime);
+            MoneyTransferrer bt3 = new MoneyTransferrer(mutex, delayTime);
+            MoneyTransferrer bt4 = new MoneyTransferrer(mutex, delayTime);
+            MoneyTransferrer bt5 = new MoneyTransferrer(mutex, delayTime);
 
             Task t1 = new Task(() => new Object());
             Task t2 = new Task(() => new Object());
@@ -41,11 +41,11 @@ namespace Threads
 
             while (transactionCount > 0)
             {
-                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t1 = Task.Run(() => bt1.MoneyTransfer(accounts[0], accounts[1], ref transactionCount)));
-                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t2 = Task.Run(() => bt2.MoneyTransfer(accounts[2], accounts[3], ref transactionCount)));
-                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t3 = Task.Run(() => bt3.MoneyTransfer(accounts[1], accounts[0], ref transactionCount)));
-                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t4 = Task.Run(() => bt4.MoneyTransfer(accounts[3], accounts[2], ref transactionCount)));
-                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t5 = Task.Run(() => bt5.MoneyTransfer(accounts[0], accounts[3], ref transactionCount)));
+                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t1 = Task.Run(() => bt1.DoTransfer(accounts[0], accounts[1], ref transactionCount)));
+                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t2 = Task.Run(() => bt2.DoTransfer(accounts[2], accounts[3], ref transactionCount)));
+                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t3 = Task.Run(() => bt3.DoTransfer(accounts[1], accounts[0], ref transactionCount)));
+                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t4 = Task.Run(() => bt4.DoTransfer(accounts[3], accounts[2], ref transactionCount)));
+                Task.Delay(Randomize()).GetAwaiter().OnCompleted(() => t5 = Task.Run(() => bt5.DoTransfer(accounts[0], accounts[3], ref transactionCount)));
             }
 
             Task.WaitAll();
@@ -55,6 +55,7 @@ namespace Threads
 
         public int Randomize()
         {
+            return 1;
             return rnd.Next(100);
         }
 
