@@ -6,14 +6,14 @@ namespace Thread_Tests
     public class Tests
     {
         static Accounts accounts;
-        static BankThreads bank;
+        static BankTaskScheduller bank;
 
         [SetUp]
         public void Setup()
         {
             int accountsCount = 4;
             accounts = new Accounts(accountsCount);
-            bank = new BankThreads(accounts.accounts, 700, 2);
+            bank = new BankTaskScheduller(accounts.accounts, 300, 2);
         }
 
         [Test]

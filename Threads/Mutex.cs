@@ -32,6 +32,11 @@ namespace Threads
             return result;
         }
 
+        public object IsLocked()
+        {
+            return locked;
+        }
+
         public bool ResetMutex(Account a1, Account a2)
         {
             bool result;

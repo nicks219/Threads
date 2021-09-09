@@ -63,7 +63,7 @@ namespace Threads
         {
             int id = Thread.CurrentThread.ManagedThreadId;
             Random rnd = new Random();
-            Console.WriteLine("Task started in thread: " + id);
+            //Console.WriteLine("Task started in thread: " + id);
 
             mutex.BlockingWait(sender, recipient, 0);
             {
@@ -86,7 +86,7 @@ namespace Threads
                     }
                 }
             }
-            Console.WriteLine("Task stopped in thread: " + id);
+            //Console.WriteLine("Task stopped in thread: " + id);
         }
     }
 }
