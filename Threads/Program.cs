@@ -9,10 +9,12 @@ namespace Threads
         {
             int accountsCount = 4;
             Accounts accounts = new Accounts(accountsCount);
-            _ = new BankTaskScheduller(accounts.accounts, 1000000, 0);
-            Thread.Sleep(1000);
+            var bank = new BankTaskScheduller(accounts.accounts, 100000, 1);
+            Thread.Sleep(100);
             accounts.PrintInfo();
+            bank.PrintInfo();
             Console.ReadLine();
+            //Environment.Exit(0);
         }
     }
 }

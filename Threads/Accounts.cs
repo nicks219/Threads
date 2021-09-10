@@ -22,7 +22,7 @@ namespace Threads
         public decimal Sum()
         {
             decimal sum = 0;
-            lock (locked)
+            lock (accounts)
             {
                 foreach (var r in accounts)
                 {
@@ -35,7 +35,7 @@ namespace Threads
         public decimal PrintInfo()
         {
             decimal sum = 0;
-            lock (locked)
+            lock (accounts)
             {
                 foreach (var r in accounts)
                 {

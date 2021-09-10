@@ -5,7 +5,7 @@ using System.Threading;
 namespace Threads
 {
     /// <summary>
-    /// самодельный синхронный мьютекс
+    /// бесполезная самописная блокировка (работает)
     /// </summary>
     public class Mutex
     {
