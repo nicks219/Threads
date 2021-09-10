@@ -17,40 +17,41 @@ namespace Threads
             if (transactionCount < 0) return;
             decimal valueMoney = new Random().Next(10);
 
-            lock (sender)
+            for (;;)
             {
-                if (Monitor.TryEnter(recipient))
+                lock (sender)
                 {
-                    try
+                    if (Monitor.TryEnter(recipient))
                     {
-                        //if (transactionCount > 0)
+                        try
+                        {
                             transactionCount--;
-                        sender.Money -= valueMoney;
-                        recipient.Money += valueMoney;
-                        return;
-                    }
-                    finally
-                    {
-                        Monitor.Exit(recipient);
+                            sender.Money -= valueMoney;
+                            recipient.Money += valueMoney;
+                            return;
+                        }
+                        finally
+                        {
+                            Monitor.Exit(recipient);
+                        }
                     }
                 }
-            }
 
-            lock (recipient)
-            {
-                if (Monitor.TryEnter(sender))
+                lock (recipient)
                 {
-                    try
+                    if (Monitor.TryEnter(sender))
                     {
-                        //if (transactionCount > 0)
+                        try
+                        {
                             transactionCount--;
-                        sender.Money -= valueMoney;
-                        recipient.Money += valueMoney;
-                        return;
-                    }
-                    finally
-                    {
-                        Monitor.Exit(sender);
+                            sender.Money -= valueMoney;
+                            recipient.Money += valueMoney;
+                            return;
+                        }
+                        finally
+                        {
+                            Monitor.Exit(sender);
+                        }
                     }
                 }
             }
