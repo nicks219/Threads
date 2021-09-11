@@ -4,27 +4,15 @@ namespace Threads
 {
     public class Account
     {
-        public string ID { get; private set; }
-        decimal _money;
+        public string Id { get; }
 
-        public decimal Money
-        {
-            get
-            {
-                return _money;
-            }
-            set
-            {
-                {
-                    _money = value;
-                }
-            }
-        }
+        public decimal Money { get; set; }
+
         public Account()
         {
             Money = 10000M;
             Random rnd = new Random();
-            ID = rnd.Next(1, 10000).ToString();
+            Id = rnd.Next(1, 10000).ToString();
         }
     }
 }

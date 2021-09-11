@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Threads
 {
@@ -9,22 +8,22 @@ namespace Threads
     /// </summary>
     public class Mutex
     {
-        private readonly HashSet<Account> hashset = new HashSet<Account>();
-        private readonly object locked = new Object();
+        private readonly HashSet<Account> _hashset = new HashSet<Account>();
+        private readonly object _locked = new Object();
 
         private bool SetMutex(Account a1, Account a2, int id)
         {
             bool result;
-            lock (locked)
+            lock (_locked)
             {
                 //если транзакция не удалась, надо делать откат транзакции
-                result = hashset.Add(a1);
-                if (result == true)
+                result = _hashset.Add(a1);
+                if (result)
                 {
-                    result = result && hashset.Add(a2);
-                    if (result == false)
+                    result = _hashset.Add(a2);
+                    if (!result)
                     {
-                        hashset.Remove(a1);
+                        _hashset.Remove(a1);
                     }
                 }
 
@@ -34,16 +33,16 @@ namespace Threads
 
         public object IsLocked()
         {
-            return locked;
+            return _locked;
         }
 
         public bool ResetMutex(Account a1, Account a2)
         {
             bool result;
-            lock (locked)
+            lock (_locked)
             {
-                result = hashset.Remove(a1);
-                result = result && hashset.Remove(a2);
+                result = _hashset.Remove(a1);
+                result = result && _hashset.Remove(a2);
             }
             return result;
         }
@@ -53,10 +52,10 @@ namespace Threads
         /// </summary>
         /// <param name="a1">первый аккаунт</param>
         /// <param name="a2">второй аккаунт</param>
+        /// <param name="id"></param>
         public void BlockingWait(Account a1, Account a2, int id)
         {
-            while (!this.SetMutex(a1, a2, id)) ;
-            return;
+            while (!this.SetMutex(a1, a2, id)) { }
         }
     }
 }

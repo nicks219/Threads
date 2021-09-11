@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace Threads
@@ -14,7 +13,7 @@ namespace Threads
         /// <param name="transactionCount">ссылка на счетчик транзакций</param>
         public void DoTransfer(Account sender, Account recipient, ref int transactionCount)
         {
-            if (transactionCount < 0) return;
+            if (transactionCount < 1) return;
             decimal valueMoney = new Random().Next(10);
 
             for (;;)

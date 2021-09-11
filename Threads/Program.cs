@@ -9,7 +9,7 @@ namespace Threads
         {
             int accountsCount = 4;
             Accounts accounts = new Accounts(accountsCount);
-            var bank = new BankTaskScheduller(accounts.accounts, 100000, 1);
+            var bank = BankTaskScheduller.CreateInstance(accounts.UsersList, 100000, 1);
             Thread.Sleep(100);
             accounts.PrintInfo();
             bank.PrintInfo();
